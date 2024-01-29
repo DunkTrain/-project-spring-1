@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -50,6 +51,8 @@ public class TaskController {
      * @param limit количество задач на странице
      * @return имя представления для отображения списка задач
      */
+    //    @RequestMapping(value = "/", method = RequestMethod.GET)
+    //TODO: 405
     @GetMapping("/")
     public String tasks(Model model,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -63,7 +66,6 @@ public class TaskController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, pagesTotal).boxed().collect(Collectors.toList());
             model.addAttribute("page_numbers", pageNumbers);
         }
-
         return "tasks";
     }
 

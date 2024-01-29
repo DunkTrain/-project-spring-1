@@ -1,24 +1,32 @@
 package com.javarush.shevchenko.config;
 
+import jakarta.servlet.Filter;
+import java.nio.charset.StandardCharsets;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    // Метод возвращает классы конфигурации корневого контекста
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[0];
     }
 
-    // Метод возвращает классы конфигурации для DispatcherServlet
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{WebConfig.class}; // Возвращаем класс WebConfig, содержащий конфигурацию веб-приложения
+        return new Class[]{WebConfig.class};
     }
 
-    // Метод возвращает URL-шаблоны, с которыми ассоциируется DispatcherServlet
     @Override
     protected String[] getServletMappings() {
-        return new String[] {"/"}; // Возвращаем "/", чтобы DispatcherServlet обрабатывал все запросы к корню приложения
+        return new String[] {"/"};
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setEncoding(StandardCharsets.UTF_8.name());
+        characterEncodingFilter.setForceEncoding(true);
+        return new Filter[] { characterEncodingFilter };
     }
 }
