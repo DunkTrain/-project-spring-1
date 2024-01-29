@@ -21,7 +21,7 @@ public class Task {
     private String description;
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private int status;
+    private Status status;
 
     public int getId() {
         return id;
@@ -39,11 +39,11 @@ public class Task {
         this.description = description;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }
