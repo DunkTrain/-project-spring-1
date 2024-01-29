@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class AppConfig {
+
+    // Метод для создания фабрики сессий Hibernate
     @Bean
     public LocalSessionFactoryBean sessionFactoryBean() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -24,6 +26,7 @@ public class AppConfig {
         return sessionFactory;
     }
 
+    // Метод для настройки свойств Hibernate
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
@@ -32,6 +35,7 @@ public class AppConfig {
         return properties;
     }
 
+    // Метод для создания и настройки источника данных (DataSource)
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("com.p6spy.engine.spy.P6SpyDriver");
@@ -42,6 +46,7 @@ public class AppConfig {
         return dataSource;
     }
 
+    // Метод для создания менеджера транзакций JPA
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory factory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();

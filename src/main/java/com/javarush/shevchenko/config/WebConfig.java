@@ -1,7 +1,5 @@
 package com.javarush.shevchenko.config;
 
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Configuration
 @EnableWebMvc
@@ -22,6 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
         this.applicationContext = applicationContext;
     }
 
+    // Метод для создания и настройки резолвера шаблонов Thymeleaf
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
@@ -33,6 +34,7 @@ public class WebConfig implements WebMvcConfigurer {
         return resolver;
     }
 
+    // Метод для создания и настройки движка шаблонов Thymeleaf
     @Bean
     public SpringTemplateEngine engine() {
         SpringTemplateEngine engine = new SpringTemplateEngine();
@@ -41,11 +43,13 @@ public class WebConfig implements WebMvcConfigurer {
         return engine;
     }
 
+    // Метод для добавления контроллера представлений по умолчанию
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("tasks");
     }
 
+    // Метод для добавления обработчиков ресурсов (статических файлов)
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/html/**").addResourceLocations("/html/");
