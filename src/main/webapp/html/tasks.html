@@ -1,23 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>tasks</title>
+    <link href="style/main.css" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-<table>
+<table class="blueTable">
     <thead>
-    <th>ID</th>
-    <th>Description</th>
-    <th>Status</th>
-    </thead>
-    <tbody>
-    <tr th:each="task,number : ${tasks}">
-        <td th:text="${task.id}"></td>
-        <td th:text="${task.description}" th:id="'description_' + ${task.id}"></td>
-        <td th:text="${task.status}" th:id="'status_' + ${task.id}"></td>
+    <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th></th>
+        <th></th>
     </tr>
-    </tbody>
-</table>
+    </thead>
+    <tfoot>
+    <tr th:if= "${pageCount > 1}">
+        <td colspan="5">
+            <div class="links">
+                <a th:each="pageNumber :  ${#numbers.sequence(1, pageCount)}"
+                   th:href="@{/(page=${pageNumber}, limit=${limit})}"
+                   th:text="${pageNumber}"></a>
+            </div>
+        </td>
+    </tr>
+    </tfoot>
+    <tbody>
+    <tr th:each="task : ${listOfTasks}">
+        <td th:text="${task.id}"></td>
+        <td th:text="${task.description}"></td>
+        <td th:text="${task.status}" th:id="'select_status_' + ${task.id}"></td>
+        <td>
+            <button th:id="'edit_' + ${task.id}" th:onclick="'editTask(' + ${task.id} + ')'">✍️ Edit</button>
+        </td>
+        <td>
+            <button th:id="'delete_' + ${task.id}" th:onclick="'deleteTask(' + ${task.id} + ')'">❌ Delete</button>
+        </td>
+    </tr>
+    </tbody></table>
+<div style="width: fit-content;">
+    <h3>Add new Task</h3>
+    <table class="blueTable">
+        <tr>
+            <td>👉</td>
+            <td><label for='new_task_description'></label><input id='new_task_description' type='text' value=''/></td>
+            <td><label for='new_task_status'></label><select id='new_task_status'>
+                <option value='IN_PROGRESS'>IN_PROGRESS</option>
+                <option value='DONE'>DONE</option>
+                <option value='PAUSED'>PAUSED</option>
+            </select>
+            </td>
+            <td><button id="add" th:onclick="addTask()">🐣 Add</button></td>
+        </tr>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="script/my.js"></script>
 </body>
 </html>

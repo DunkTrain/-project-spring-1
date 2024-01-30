@@ -52,7 +52,6 @@ public class TaskController {
      * @return имя представления для отображения списка задач
      */
     //    @RequestMapping(value = "/", method = RequestMethod.GET)
-    //TODO: 405
     @GetMapping("/")
     public String tasks(Model model,
                         @RequestParam(value = "page", required = false, defaultValue = "1") int page,

@@ -2,19 +2,24 @@ package com.javarush.shevchenko.config;
 
 import java.util.Properties;
 import javax.sql.DataSource;
-import org.hibernate.cfg.Environment;
+import lombok.AllArgsConstructor;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
+import static org.hibernate.cfg.AvailableSettings.*;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+
+@AllArgsConstructor
 @Configuration
 @EnableTransactionManagement
 public class AppConfig {
+
+    private final PropertiesService propertiesService;
 
     // Метод для создания фабрики сессий Hibernate
     @Bean
@@ -29,20 +34,22 @@ public class AppConfig {
     // Метод для настройки свойств Hibernate
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
-        properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
-        properties.put(Environment.HBM2DDL_AUTO, "validate");
+        properties.put(DIALECT, propertiesService.getDialect());
+        properties.put(DRIVER, propertiesService.getDriverClassName());
+        properties.put(HBM2DDL_AUTO, propertiesService.getHbm2ddl());
+        properties.put(SHOW_SQL, propertiesService.getShowSql());
         return properties;
     }
 
     // Метод для создания и настройки источника данных (DataSource)
+    @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName("com.p6spy.engine.spy.P6SpyDriver");
-        dataSource.setJdbcUrl("jdbc:p6spy:mysql://localhost:3306/todo");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
-        dataSource.setMaximumPoolSize(10);
+        dataSource.setMaximumPoolSize(propertiesService.getMaximumPoolSize());
+        dataSource.setDriverClassName(propertiesService.getDriverClassName());
+        dataSource.setJdbcUrl(propertiesService.getConnectionUrl());
+        dataSource.setUsername(propertiesService.getUsername());
+        dataSource.setPassword(propertiesService.getPassword());
         return dataSource;
     }
 
