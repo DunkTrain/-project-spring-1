@@ -2,62 +2,54 @@ package com.javarush.shevchenko.config;
 
 import java.util.Properties;
 import javax.sql.DataSource;
-import lombok.AllArgsConstructor;
+import org.hibernate.cfg.Environment;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
-import static org.hibernate.cfg.AvailableSettings.*;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
-@AllArgsConstructor
 @Configuration
 @EnableTransactionManagement
 public class AppConfig {
 
-    private final PropertiesService propertiesService;
-
-    // Метод для создания фабрики сессий Hibernate
-    @Bean
+    @Bean(name = "sessionFactory")
     public LocalSessionFactoryBean sessionFactoryBean() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("com.javarush.shevchenko.domain");
-        sessionFactory.setHibernateProperties(hibernateProperties());
-        return sessionFactory;
+        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        sessionFactoryBean.setDataSource(dataSource());
+        sessionFactoryBean.setPackagesToScan("com.javarush.shevchenko.domain");
+        sessionFactoryBean.setHibernateProperties(hibernateProperties());
+        return sessionFactoryBean;
     }
 
-    // Метод для настройки свойств Hibernate
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put(DIALECT, propertiesService.getDialect());
-        properties.put(DRIVER, propertiesService.getDriverClassName());
-        properties.put(HBM2DDL_AUTO, propertiesService.getHbm2ddl());
-        properties.put(SHOW_SQL, propertiesService.getShowSql());
+        properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+        properties.put(Environment.DRIVER, "com.p6spy.engine.spy.P6SpyDriver");
+        properties.put(Environment.URL, "jdbc:p6spy:mysql://localhost:3306/todo");
+        properties.put(Environment.HBM2DDL_AUTO, "validate");
         return properties;
     }
 
-    // Метод для создания и настройки источника данных (DataSource)
     @Bean
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setMaximumPoolSize(propertiesService.getMaximumPoolSize());
-        dataSource.setDriverClassName(propertiesService.getDriverClassName());
-        dataSource.setJdbcUrl(propertiesService.getConnectionUrl());
-        dataSource.setUsername(propertiesService.getUsername());
-        dataSource.setPassword(propertiesService.getPassword());
+        dataSource.setDriverClassName("com.p6spy.engine.spy.P6SpyDriver");
+        dataSource.setJdbcUrl("jdbc:p6spy:mysql://localhost:3306/todo");
+        dataSource.setUsername("root");
+        dataSource.setPassword("root");
+        dataSource.setMaximumPoolSize(10);
         return dataSource;
     }
 
-    // Метод для создания менеджера транзакций JPA
     @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory factory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(factory);
         return transactionManager;
     }
+
 }
